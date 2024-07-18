@@ -1,0 +1,2 @@
+xhost local:root
+docker run -it -v ./:/app/ --privileged -v /tmp/.X11-unix:/tmp/.X11-unix -v /run/udev:/run/udev:ro -e DISPLAY=:0 raylib_container bash
