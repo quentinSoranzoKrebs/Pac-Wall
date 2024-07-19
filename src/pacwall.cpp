@@ -1,8 +1,14 @@
 #include <raylib.h>
 #include <iostream>
 #include <string>
+#include "raymath.h"
 
 using namespace std;
+
+
+void init() {
+	//init
+}
 
 int main(void) {
 
@@ -15,7 +21,9 @@ int main(void) {
 
 	string version = "1";	
 
-	string title = tit + version;
+	string stitle = tit + version;
+
+	char *title = stitle.data();
 
 	cout << title << endl;
 
