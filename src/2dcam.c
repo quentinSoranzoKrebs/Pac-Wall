@@ -1,26 +1,24 @@
 /*******************************************************************************************
 *
-*   raylib [core] example - automation events
+*   raylib [core] example - 2D Camera platformer
 *
-*   Example originally created with raylib 5.0, last time updated with raylib 5.0
+*   Example originally created with raylib 2.5, last time updated with raylib 3.0
 *
-*   Example based on 2d_camera_platformer example by arvyy (@arvyy)
+*   Example contributed by arvyy (@arvyy) and reviewed by Ramon Santamaria (@raysan5)
 *
 *   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
 *   BSD-like license that allows static linking with closed source software
 *
-*   Copyright (c) 2023 Ramon Santamaria (@raysan5)
+*   Copyright (c) 2019-2024 arvyy (@arvyy)
 *
 ********************************************************************************************/
 
 #include "raylib.h"
 #include "raymath.h"
 
-#define GRAVITY 400
+#define G 400
 #define PLAYER_JUMP_SPD 350.0f
 #define PLAYER_HOR_SPD 200.0f
-
-#define MAX_ENVIRONMENT_ELEMENTS    5
 
 typedef struct Player {
     Vector2 position;
@@ -28,12 +26,21 @@ typedef struct Player {
     bool canJump;
 } Player;
 
-typedef struct EnvElement {
+typedef struct EnvItem {
     Rectangle rect;
     int blocking;
     Color color;
-} EnvElement;
+} EnvItem;
 
+//----------------------------------------------------------------------------------
+// Module functions declaration
+//----------------------------------------------------------------------------------
+void UpdatePlayer(Player *player, EnvItem *envItems, int envItemsLength, float delta);
+void UpdateCameraCenter(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
+void UpdateCameraCenterInsideMap(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
+void UpdateCameraCenterSmoothFollow(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
+void UpdateCameraEvenOutOnLanding(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
+void UpdateCameraPlayerBoundsPush(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -45,16 +52,13 @@ int main(void)
     const int screenWidth = 800;
     const int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - automation events");
+    InitWindow(screenWidth, screenHeight, "raylib [core] example - 2d camera");
 
-    // Define player
     Player player = { 0 };
     player.position = (Vector2){ 400, 280 };
     player.speed = 0;
     player.canJump = false;
-    
-    // Define environment elements (platforms)
-    EnvElement envElements[MAX_ENVIRONMENT_ELEMENTS] = {
+    EnvItem envItems[] = {
         {{ 0, 0, 1000, 400 }, 0, LIGHTGRAY },
         {{ 0, 400, 1000, 200 }, 1, GRAY },
         {{ 300, 200, 400, 10 }, 1, GRAY },
@@ -62,22 +66,33 @@ int main(void)
         {{ 650, 300, 100, 10 }, 1, GRAY }
     };
 
-    // Define camera
+    int envItemsLength = sizeof(envItems)/sizeof(envItems[0]);
+
     Camera2D camera = { 0 };
     camera.target = player.position;
     camera.offset = (Vector2){ screenWidth/2.0f, screenHeight/2.0f };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
-    
-    // Automation events
-    AutomationEventList aelist = LoadAutomationEventList(0);  // Initialize list of automation events to record new events
-    SetAutomationEventList(&aelist);
-    bool eventRecording = false;
-    bool eventPlaying = false;
-    
-    unsigned int frameCounter = 0;
-    unsigned int playFrameCounter = 0;
-    unsigned int currentPlayFrame = 0;
+
+    // Store pointers to the multiple update camera functions
+    void (*cameraUpdaters[])(Camera2D*, Player*, EnvItem*, int, float, int, int) = {
+        UpdateCameraCenter,
+        UpdateCameraCenterInsideMap,
+        UpdateCameraCenterSmoothFollow,
+        UpdateCameraEvenOutOnLanding,
+        UpdateCameraPlayerBoundsPush
+    };
+
+    int cameraOption = 0;
+    int cameraUpdatersLength = sizeof(cameraUpdaters)/sizeof(cameraUpdaters[0]);
+
+    char *cameraDescriptions[] = {
+        "Follow player center",
+        "Follow player center, but clamp to map edges",
+        "Follow player center; smoothed",
+        "Follow player center horizontally; update player center vertically after landing",
+        "Player push camera on getting too close to screen edge"
+    };
 
     SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
@@ -87,75 +102,9 @@ int main(void)
     {
         // Update
         //----------------------------------------------------------------------------------
-        float deltaTime = 0.015f;//GetFrameTime();
-        
-        // Dropped files logic
-        //----------------------------------------------------------------------------------
-        if (IsFileDropped())
-        {
-            FilePathList droppedFiles = LoadDroppedFiles();
+        float deltaTime = GetFrameTime();
 
-            // Supports loading .rgs style files (text or binary) and .png style palette images
-            if (IsFileExtension(droppedFiles.paths[0], ".txt;.rae"))
-            {
-                UnloadAutomationEventList(aelist);
-                aelist = LoadAutomationEventList(droppedFiles.paths[0]);
-                
-                eventRecording = false;
-                
-                // Reset scene state to play
-                eventPlaying = true;
-                playFrameCounter = 0;
-                currentPlayFrame = 0;
-                
-                player.position = (Vector2){ 400, 280 };
-                player.speed = 0;
-                player.canJump = false;
-
-                camera.target = player.position;
-                camera.offset = (Vector2){ screenWidth/2.0f, screenHeight/2.0f };
-                camera.rotation = 0.0f;
-                camera.zoom = 1.0f;
-            }
-
-            UnloadDroppedFiles(droppedFiles);   // Unload filepaths from memory
-        }
-        //----------------------------------------------------------------------------------
-
-        // Update player
-        //----------------------------------------------------------------------------------
-        if (IsKeyDown(KEY_LEFT)) player.position.x -= PLAYER_HOR_SPD*deltaTime;
-        if (IsKeyDown(KEY_RIGHT)) player.position.x += PLAYER_HOR_SPD*deltaTime;
-        if (IsKeyDown(KEY_SPACE) && player.canJump)
-        {
-            player.speed = -PLAYER_JUMP_SPD;
-            player.canJump = false;
-        }
-
-        int hitObstacle = 0;
-        for (int i = 0; i < MAX_ENVIRONMENT_ELEMENTS; i++)
-        {
-            EnvElement *element = &envElements[i];
-            Vector2 *p = &(player.position);
-            if (element->blocking &&
-                element->rect.x <= p->x &&
-                element->rect.x + element->rect.width >= p->x &&
-                element->rect.y >= p->y &&
-                element->rect.y <= p->y + player.speed*deltaTime)
-            {
-                hitObstacle = 1;
-                player.speed = 0.0f;
-                p->y = element->rect.y;
-            }
-        }
-
-        if (!hitObstacle)
-        {
-            player.position.y += player.speed*deltaTime;
-            player.speed += GRAVITY*deltaTime;
-            player.canJump = false;
-        }
-        else player.canJump = true;
+        UpdatePlayer(&player, envItems, envItemsLength, deltaTime);
 
         camera.zoom += ((float)GetMouseWheelMove()*0.05f);
 
@@ -164,111 +113,14 @@ int main(void)
 
         if (IsKeyPressed(KEY_R))
         {
-            // Reset game state
-            player.position = (Vector2){ 400, 280 };
-            player.speed = 0;
-            player.canJump = false;
-
-            camera.target = player.position;
-            camera.offset = (Vector2){ screenWidth/2.0f, screenHeight/2.0f };
-            camera.rotation = 0.0f;
             camera.zoom = 1.0f;
-        }
-        //----------------------------------------------------------------------------------
-
-        // Update camera
-        //----------------------------------------------------------------------------------
-        camera.target = player.position;
-        camera.offset = (Vector2){ screenWidth/2.0f, screenHeight/2.0f };
-        float minX = 1000, minY = 1000, maxX = -1000, maxY = -1000;
-
-        for (int i = 0; i < MAX_ENVIRONMENT_ELEMENTS; i++)
-        {
-            EnvElement *element = &envElements[i];
-            minX = fminf(element->rect.x, minX);
-            maxX = fmaxf(element->rect.x + element->rect.width, maxX);
-            minY = fminf(element->rect.y, minY);
-            maxY = fmaxf(element->rect.y + element->rect.height, maxY);
+            player.position = (Vector2){ 400, 280 };
         }
 
-        Vector2 max = GetWorldToScreen2D((Vector2){ maxX, maxY }, camera);
-        Vector2 min = GetWorldToScreen2D((Vector2){ minX, minY }, camera);
+        if (IsKeyPressed(KEY_C)) cameraOption = (cameraOption + 1)%cameraUpdatersLength;
 
-        if (max.x < screenWidth) camera.offset.x = screenWidth - (max.x - screenWidth/2);
-        if (max.y < screenHeight) camera.offset.y = screenHeight - (max.y - screenHeight/2);
-        if (min.x > 0) camera.offset.x = screenWidth/2 - min.x;
-        if (min.y > 0) camera.offset.y = screenHeight/2 - min.y;
-        //----------------------------------------------------------------------------------
-        
-        // Toggle events recording
-        if (IsKeyPressed(KEY_S))
-        {
-            if (!eventPlaying)
-            {
-                if (eventRecording)
-                {
-                    StopAutomationEventRecording();
-                    eventRecording = false;
-                    
-                    ExportAutomationEventList(aelist, "automation.rae");
-                    
-                    TraceLog(LOG_INFO, "RECORDED FRAMES: %i", aelist.count);
-                }
-                else 
-                {
-                    SetAutomationEventBaseFrame(180);
-                    StartAutomationEventRecording();
-                    eventRecording = true;
-                }
-            }
-        }
-        else if (IsKeyPressed(KEY_A))
-        {
-            if (!eventRecording && (aelist.count > 0))
-            {
-                // Reset scene state to play
-                eventPlaying = true;
-                playFrameCounter = 0;
-                currentPlayFrame = 0;
-
-                player.position = (Vector2){ 400, 280 };
-                player.speed = 0;
-                player.canJump = false;
-
-                camera.target = player.position;
-                camera.offset = (Vector2){ screenWidth/2.0f, screenHeight/2.0f };
-                camera.rotation = 0.0f;
-                camera.zoom = 1.0f;
-            }
-        }
-        
-        if (eventPlaying)
-        {
-            // NOTE: Multiple events could be executed in a single frame
-            while (playFrameCounter == aelist.events[currentPlayFrame].frame)
-            {
-                TraceLog(LOG_INFO, "PLAYING: PlayFrameCount: %i | currentPlayFrame: %i | Event Frame: %i, param: %i", 
-                    playFrameCounter, currentPlayFrame, aelist.events[currentPlayFrame].frame, aelist.events[currentPlayFrame].params[0]);
-                
-                PlayAutomationEvent(aelist.events[currentPlayFrame]);
-                currentPlayFrame++;
-
-                if (currentPlayFrame == aelist.count)
-                {
-                    eventPlaying = false;
-                    currentPlayFrame = 0;
-                    playFrameCounter = 0;
-
-                    TraceLog(LOG_INFO, "FINISH PLAYING!");
-                    break;
-                }
-            }
-            
-            playFrameCounter++;
-        }
-        
-        if (eventRecording || eventPlaying) frameCounter++;
-        else frameCounter = 0;
+        // Call update camera function by its pointer
+        cameraUpdaters[cameraOption](&camera, &player, envItems, envItemsLength, deltaTime, screenWidth, screenHeight);
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -279,47 +131,22 @@ int main(void)
 
             BeginMode2D(camera);
 
-                // Draw environment elements
-                for (int i = 0; i < MAX_ENVIRONMENT_ELEMENTS; i++)
-                {
-                    DrawRectangleRec(envElements[i].rect, envElements[i].color);
-                }
+                for (int i = 0; i < envItemsLength; i++) DrawRectangleRec(envItems[i].rect, envItems[i].color);
 
-                // Draw player rectangle
-                DrawRectangleRec((Rectangle){ player.position.x - 20, player.position.y - 40, 40, 40 }, RED);
+                Rectangle playerRect = { player.position.x - 20, player.position.y - 40, 40.0f, 40.0f };
+                DrawRectangleRec(playerRect, RED);
+                
+                DrawCircleV(player.position, 5.0f, GOLD);
 
             EndMode2D();
-            
-            // Draw game controls
-            DrawRectangle(10, 10, 290, 145, Fade(SKYBLUE, 0.5f));
-            DrawRectangleLines(10, 10, 290, 145, Fade(BLUE, 0.8f));
 
             DrawText("Controls:", 20, 20, 10, BLACK);
-            DrawText("- RIGHT | LEFT: Player movement", 30, 40, 10, DARKGRAY);
-            DrawText("- SPACE: Player jump", 30, 60, 10, DARKGRAY);
-            DrawText("- R: Reset game state", 30, 80, 10, DARKGRAY);
-
-            DrawText("- S: START/STOP RECORDING INPUT EVENTS", 30, 110, 10, BLACK);
-            DrawText("- A: REPLAY LAST RECORDED INPUT EVENTS", 30, 130, 10, BLACK);
-
-            // Draw automation events recording indicator
-            if (eventRecording)
-            {
-                DrawRectangle(10, 160, 290, 30, Fade(RED, 0.3f));
-                DrawRectangleLines(10, 160, 290, 30, Fade(MAROON, 0.8f));
-                DrawCircle(30, 175, 10, MAROON);
-
-                if (((frameCounter/15)%2) == 1) DrawText(TextFormat("RECORDING EVENTS... [%i]", aelist.count), 50, 170, 10, MAROON);
-            }
-            else if (eventPlaying)
-            {
-                DrawRectangle(10, 160, 290, 30, Fade(LIME, 0.3f));
-                DrawRectangleLines(10, 160, 290, 30, Fade(DARKGREEN, 0.8f));
-                DrawTriangle((Vector2){ 20, 155 + 10 }, (Vector2){ 20, 155 + 30 }, (Vector2){ 40, 155 + 20 }, DARKGREEN);
-
-                if (((frameCounter/15)%2) == 1) DrawText(TextFormat("PLAYING RECORDED EVENTS... [%i]", currentPlayFrame), 50, 170, 10, DARKGREEN);
-            }
-            
+            DrawText("- Right/Left to move", 40, 40, 10, DARKGRAY);
+            DrawText("- Space to jump", 40, 60, 10, DARKGRAY);
+            DrawText("- Mouse Wheel to Zoom in-out, R to reset zoom", 40, 80, 10, DARKGRAY);
+            DrawText("- C to change camera mode", 40, 100, 10, DARKGRAY);
+            DrawText("Current camera mode:", 20, 120, 10, BLACK);
+            DrawText(cameraDescriptions[cameraOption], 40, 140, 10, DARKGRAY);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -331,4 +158,144 @@ int main(void)
     //--------------------------------------------------------------------------------------
 
     return 0;
+}
+
+void UpdatePlayer(Player *player, EnvItem *envItems, int envItemsLength, float delta)
+{
+    if (IsKeyDown(KEY_LEFT)) player->position.x -= PLAYER_HOR_SPD*delta;
+    if (IsKeyDown(KEY_RIGHT)) player->position.x += PLAYER_HOR_SPD*delta;
+    if (IsKeyDown(KEY_SPACE) && player->canJump)
+    {
+        player->speed = -PLAYER_JUMP_SPD;
+        player->canJump = false;
+    }
+
+    bool hitObstacle = false;
+    for (int i = 0; i < envItemsLength; i++)
+    {
+        EnvItem *ei = envItems + i;
+        Vector2 *p = &(player->position);
+        if (ei->blocking &&
+            ei->rect.x <= p->x &&
+            ei->rect.x + ei->rect.width >= p->x &&
+            ei->rect.y >= p->y &&
+            ei->rect.y <= p->y + player->speed*delta)
+        {
+            hitObstacle = true;
+            player->speed = 0.0f;
+            p->y = ei->rect.y;
+            break;
+        }
+    }
+
+    if (!hitObstacle)
+    {
+        player->position.y += player->speed*delta;
+        player->speed += G*delta;
+        player->canJump = false;
+    }
+    else player->canJump = true;
+}
+
+void UpdateCameraCenter(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height)
+{
+    camera->offset = (Vector2){ width/2.0f, height/2.0f };
+    camera->target = player->position;
+}
+
+void UpdateCameraCenterInsideMap(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height)
+{
+    camera->target = player->position;
+    camera->offset = (Vector2){ width/2.0f, height/2.0f };
+    float minX = 1000, minY = 1000, maxX = -1000, maxY = -1000;
+
+    for (int i = 0; i < envItemsLength; i++)
+    {
+        EnvItem *ei = envItems + i;
+        minX = fminf(ei->rect.x, minX);
+        maxX = fmaxf(ei->rect.x + ei->rect.width, maxX);
+        minY = fminf(ei->rect.y, minY);
+        maxY = fmaxf(ei->rect.y + ei->rect.height, maxY);
+    }
+
+    Vector2 max = GetWorldToScreen2D((Vector2){ maxX, maxY }, *camera);
+    Vector2 min = GetWorldToScreen2D((Vector2){ minX, minY }, *camera);
+
+    if (max.x < width) camera->offset.x = width - (max.x - width/2);
+    if (max.y < height) camera->offset.y = height - (max.y - height/2);
+    if (min.x > 0) camera->offset.x = width/2 - min.x;
+    if (min.y > 0) camera->offset.y = height/2 - min.y;
+}
+
+void UpdateCameraCenterSmoothFollow(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height)
+{
+    static float minSpeed = 30;
+    static float minEffectLength = 10;
+    static float fractionSpeed = 0.8f;
+
+    camera->offset = (Vector2){ width/2.0f, height/2.0f };
+    Vector2 diff = Vector2Subtract(player->position, camera->target);
+    float length = Vector2Length(diff);
+
+    if (length > minEffectLength)
+    {
+        float speed = fmaxf(fractionSpeed*length, minSpeed);
+        camera->target = Vector2Add(camera->target, Vector2Scale(diff, speed*delta/length));
+    }
+}
+
+void UpdateCameraEvenOutOnLanding(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height)
+{
+    static float evenOutSpeed = 700;
+    static int eveningOut = false;
+    static float evenOutTarget;
+
+    camera->offset = (Vector2){ width/2.0f, height/2.0f };
+    camera->target.x = player->position.x;
+
+    if (eveningOut)
+    {
+        if (evenOutTarget > camera->target.y)
+        {
+            camera->target.y += evenOutSpeed*delta;
+
+            if (camera->target.y > evenOutTarget)
+            {
+                camera->target.y = evenOutTarget;
+                eveningOut = 0;
+            }
+        }
+        else
+        {
+            camera->target.y -= evenOutSpeed*delta;
+
+            if (camera->target.y < evenOutTarget)
+            {
+                camera->target.y = evenOutTarget;
+                eveningOut = 0;
+            }
+        }
+    }
+    else
+    {
+        if (player->canJump && (player->speed == 0) && (player->position.y != camera->target.y))
+        {
+            eveningOut = 1;
+            evenOutTarget = player->position.y;
+        }
+    }
+}
+
+void UpdateCameraPlayerBoundsPush(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height)
+{
+    static Vector2 bbox = { 0.2f, 0.2f };
+
+    Vector2 bboxWorldMin = GetScreenToWorld2D((Vector2){ (1 - bbox.x)*0.5f*width, (1 - bbox.y)*0.5f*height }, *camera);
+    Vector2 bboxWorldMax = GetScreenToWorld2D((Vector2){ (1 + bbox.x)*0.5f*width, (1 + bbox.y)*0.5f*height }, *camera);
+    camera->offset = (Vector2){ (1 - bbox.x)*0.5f * width, (1 - bbox.y)*0.5f*height };
+
+    if (player->position.x < bboxWorldMin.x) camera->target.x = player->position.x;
+    if (player->position.y < bboxWorldMin.y) camera->target.y = player->position.y;
+    if (player->position.x > bboxWorldMax.x) camera->target.x = bboxWorldMin.x + (player->position.x - bboxWorldMax.x);
+    if (player->position.y > bboxWorldMax.y) camera->target.y = bboxWorldMin.y + (player->position.y - bboxWorldMax.y);
 }
