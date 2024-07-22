@@ -35,7 +35,9 @@ public:
 
 	void draw() {
 		Rectangle playerRect = { position.x - 20, position.y - 40, 40.0f, 40.0f };
-		DrawRectangleRec(playerRect, RED);
+		//DrawRectangleRec(playerRect, YELLOW);
+    DrawCircle(position.x, position.y - 20, 20, YELLOW);
+    DrawCircle(position.x + 10, position.y - 28, 3, BLACK);
 	}
 
 
@@ -108,7 +110,7 @@ int main(void) {
 	Player player((Vector2){ 400, 280 },0,false);
 
     EnvItem envItems[] = {
-        //{{ 0, 0, 1000, 400 }, 0, LIGHTGRAY },
+        //{{ 0, 0, 1000, 400 }, 0, GRAY },
         {{ 0, 400, 1000, 200 }, 1, GRAY },
         {{ 300, 200, 400, 10 }, 1, GRAY },
         {{ 250, 300, 100, 10 }, 1, GRAY },
