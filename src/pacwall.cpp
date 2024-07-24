@@ -7,8 +7,8 @@
 
 using namespace std;
 
-#define G 400
-#define PLAYER_JUMP_SPD 350.0f
+#define G 500
+#define PLAYER_JUMP_SPD 370.0f
 #define PLAYER_HOR_SPD 200.0f
 
 void init() {
@@ -26,7 +26,7 @@ typedef struct EnvItem {
 class Player {
 private:
 	int vchute = 0;
-
+  string direct = "right";
 public:
 	Vector2 position;
   float speed;
@@ -35,15 +35,25 @@ public:
 
 	void draw() {
 		Rectangle playerRect = { position.x - 20, position.y - 40, 40.0f, 40.0f };
-		//DrawRectangleRec(playerRect, YELLOW);
-    DrawCircle(position.x, position.y - 20, 20, YELLOW);
-    DrawCircle(position.x + 10, position.y - 28, 3, BLACK);
+    if (direct=="right") {
+      DrawCircleSector((Vector2){position.x, position.y - 20},20.0f,25.0f,360-25,50,YELLOW);
+    } else {
+      DrawCircleSector((Vector2){position.x, position.y - 20},20.0f,-135,135,50,YELLOW);
+    }
+    DrawCircle(position.x, position.y - 30, 3, BLACK);
+    DrawCircle(position.x, position.y, 1, RED);
 	}
 
 
 	void UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta) {
-		if (IsKeyDown(KEY_LEFT)) position.x -= PLAYER_HOR_SPD*delta;
-		if (IsKeyDown(KEY_RIGHT)) position.x += PLAYER_HOR_SPD*delta;
+		if (IsKeyDown(KEY_LEFT)) {
+      position.x -= PLAYER_HOR_SPD*delta;
+      direct = "left";
+    }
+		if (IsKeyDown(KEY_RIGHT)) {
+      position.x += PLAYER_HOR_SPD*delta;
+      direct = "right";
+    }
 		if (IsKeyDown(KEY_SPACE) && canJump)
 		{
 			speed = -PLAYER_JUMP_SPD;
@@ -87,10 +97,10 @@ int main(void) {
               << PROJECT_VERSION_PATCH << std::endl;
 
 
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+  // Initialization
+  //--------------------------------------------------------------------------------------
+  const int screenWidth = 1366;
+  const int screenHeight = 768;
 
 	string tit = "PacWall v";
 
@@ -103,14 +113,16 @@ int main(void) {
 	cout << title << endl;
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(screenWidth, screenHeight, title);
+  InitWindow(screenWidth, screenHeight, title);
+  ToggleFullscreen();
 
 	SetTargetFPS(60);
 
 	Player player((Vector2){ 400, 280 },0,false);
 
     EnvItem envItems[] = {
-        //{{ 0, 0, 1000, 400 }, 0, GRAY },
+      //{{ 0, 0, 1000, 400 }, 0, GRAY },
+        {{ 400, 100, 100, 10 }, 1, GRAY },
         {{ 0, 400, 1000, 200 }, 1, GRAY },
         {{ 300, 200, 400, 10 }, 1, GRAY },
         {{ 250, 300, 100, 10 }, 1, GRAY },
@@ -146,9 +158,8 @@ int main(void) {
 
                 for (int i = 0; i < envItemsLength; i++) DrawRectangleRec(envItems[i].rect, envItems[i].color);
 
-				DrawText("Congrats! You created your first window!", 190, 200, 20, WHITE);
+                //DrawText("Congrats! You created your first window!", 190, 200, 20, WHITE);
 
-				//DrawRectangle(0, screenHeight*0.8, screenWidth, 100, BLUE);
 
                 player.draw();
 
