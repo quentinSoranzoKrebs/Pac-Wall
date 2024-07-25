@@ -22,6 +22,13 @@ typedef struct EnvItem {
     Color color;
 } EnvItem;
 
+/*class EnvItem {
+public:
+    Rectangle rect;
+    int blocking;
+    Color color;
+} EnvItem;*/
+
 
 class Player {
 private:
