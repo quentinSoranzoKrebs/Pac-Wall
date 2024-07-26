@@ -53,21 +53,9 @@ public:
 
 
 	void UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta) {
-		if (IsKeyDown(KEY_LEFT)) {
-      position.x -= PLAYER_HOR_SPD*delta;
-      direct = "left";
-    }
-		if (IsKeyDown(KEY_RIGHT)) {
-      position.x += PLAYER_HOR_SPD*delta;
-      direct = "right";
-    }
-		if (IsKeyDown(KEY_SPACE) && canJump)
-		{
-			speed = -PLAYER_JUMP_SPD;
-			canJump = false;
-		}
 
 		bool hitObstacle = false;
+    bool hitObstacleHoriz = false;
 		for (int i = 0; i < envItemsLength; i++)
 		{
 			EnvItem *ei = envItems + i;
@@ -82,7 +70,14 @@ public:
 				speed = 0.0f;
 				p->y = ei->rect.y;
 				break;
-			}
+			} else 	if (ei->blocking &&
+      	ei->rect.x - 1 >= p->x + 20 &&
+      	//ei->rect.x + ei->rect.width >= p->x &&
+      	ei->rect.y <= p->y - 20 &&
+      	ei->rect.y + ei->rect.height >= p->y - 20)
+      {
+  				hitObstacleHoriz = true;
+      }
 		}
 
 		if (!hitObstacle)
@@ -92,6 +87,19 @@ public:
 			canJump = false;
 		}
 		else canJump = true;
+
+  	if (IsKeyDown(KEY_LEFT) && hitObstacleHoriz) {
+      position.x -= PLAYER_HOR_SPD*delta;
+      direct = "left";
+    }
+  	if (IsKeyDown(KEY_RIGHT) && hitObstacleHoriz) {
+      position.x += PLAYER_HOR_SPD*delta;
+      direct = "right";
+    }
+  	if (IsKeyDown(KEY_SPACE) && canJump) {
+  		speed = -PLAYER_JUMP_SPD;
+			canJump = false;
+  	}
 	}
 
 };
@@ -131,6 +139,7 @@ int main(void) {
       //{{ 0, 0, 1000, 400 }, 0, GRAY },
         {{ 400, 100, 100, 10 }, 1, GRAY },
         {{ 0, 400, 1000, 200 }, 1, GRAY },
+        {{ 500, 360, 40, 40 }, 1, GRAY },
         {{ 300, 200, 400, 10 }, 1, GRAY },
         {{ 250, 300, 100, 10 }, 1, GRAY },
         {{ 650, 300, 100, 10 }, 1, GRAY }
