@@ -135,7 +135,7 @@ int main(void)
 
                 Rectangle playerRect = { player.position.x - 20, player.position.y - 40, 40.0f, 40.0f };
                 DrawRectangleRec(playerRect, RED);
-                
+
                 DrawCircleV(player.position, 5.0f, GOLD);
 
             EndMode2D();
@@ -229,7 +229,7 @@ void UpdateCameraCenterInsideMap(Camera2D *camera, Player *player, EnvItem *envI
 
 void UpdateCameraCenterSmoothFollow(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height)
 {
-    static float minSpeed = 30;
+    /*static float minSpeed = 30;
     static float minEffectLength = 10;
     static float fractionSpeed = 0.8f;
 
@@ -241,12 +241,12 @@ void UpdateCameraCenterSmoothFollow(Camera2D *camera, Player *player, EnvItem *e
     {
         float speed = fmaxf(fractionSpeed*length, minSpeed);
         camera->target = Vector2Add(camera->target, Vector2Scale(diff, speed*delta/length));
-    }
+    }*/
 }
 
 void UpdateCameraEvenOutOnLanding(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height)
 {
-    static float evenOutSpeed = 700;
+    /*static float evenOutSpeed = 700;
     static int eveningOut = false;
     static float evenOutTarget;
 
@@ -283,12 +283,12 @@ void UpdateCameraEvenOutOnLanding(Camera2D *camera, Player *player, EnvItem *env
             eveningOut = 1;
             evenOutTarget = player->position.y;
         }
-    }
+    }*/
 }
 
 void UpdateCameraPlayerBoundsPush(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height)
 {
-    static Vector2 bbox = { 0.2f, 0.2f };
+    /*static Vector2 bbox = { 0.2f, 0.2f };
 
     Vector2 bboxWorldMin = GetScreenToWorld2D((Vector2){ (1 - bbox.x)*0.5f*width, (1 - bbox.y)*0.5f*height }, *camera);
     Vector2 bboxWorldMax = GetScreenToWorld2D((Vector2){ (1 + bbox.x)*0.5f*width, (1 + bbox.y)*0.5f*height }, *camera);
@@ -297,5 +297,5 @@ void UpdateCameraPlayerBoundsPush(Camera2D *camera, Player *player, EnvItem *env
     if (player->position.x < bboxWorldMin.x) camera->target.x = player->position.x;
     if (player->position.y < bboxWorldMin.y) camera->target.y = player->position.y;
     if (player->position.x > bboxWorldMax.x) camera->target.x = bboxWorldMin.x + (player->position.x - bboxWorldMax.x);
-    if (player->position.y > bboxWorldMax.y) camera->target.y = bboxWorldMin.y + (player->position.y - bboxWorldMax.y);
+    if (player->position.y > bboxWorldMax.y) camera->target.y = bboxWorldMin.y + (player->position.y - bboxWorldMax.y);*/
 }
