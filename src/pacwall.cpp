@@ -186,6 +186,11 @@ int main(void) {
 
         float deltaTime = GetFrameTime();
 
+        camera.zoom += ((float)GetMouseWheelMove()*0.05f);
+
+        if (camera.zoom > 3.0f) camera.zoom = 3.0f;
+        else if (camera.zoom < 0.25f) camera.zoom = 0.25f;
+
         player.UpdatePlayer(envItems, envItemsLength, deltaTime);
 
         // Camera target follows player
