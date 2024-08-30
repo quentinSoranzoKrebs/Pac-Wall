@@ -17,6 +17,10 @@
  * along with Pac-Wall. If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+ #ifndef ENVITEM_H
+ #define ENVITEM_H
+
 #include <iostream>
 #include <raylib.h>
 
@@ -24,4 +28,7 @@ typedef struct EnvItem {
     Rectangle rect;
     int blocking;
     Color color;
+    Color origin_color = color;
 } EnvItem;
+
+#endif

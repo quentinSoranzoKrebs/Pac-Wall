@@ -20,13 +20,15 @@
 #include <raylib.h>
 #include <iostream>
 #include <string>
+#include "envitem.cpp"
+#include "perso.h"
 #include "raymath.h"
 //#include "player.h"
 #include "version.h"
 
 using namespace std;
 
-#define G 500
+/*#define G 500
 #define PLAYER_JUMP_SPD 370.0f
 #define PLAYER_HOR_SPD 200.0f
 
@@ -42,12 +44,12 @@ typedef struct EnvItem {
     Color origin_color = color;
 } EnvItem;
 
-/*class EnvItem {
+class EnvItem {
 public:
     Rectangle rect;
     int blocking;
     Color color;
-} EnvItem;*/
+} EnvItem;
 
 
 class Player {
@@ -139,7 +141,7 @@ public:
   	}
 	}
 
-};
+};*/
 
 
 void UpdateCameraCenterInsideMap(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
