@@ -107,6 +107,7 @@ int main(void) {
         else if (camera.zoom < 0.25f) camera.zoom = 0.25f;
 
         player.UpdatePlayer(envItems, envItemsLength, deltaTime);
+        mstr.Update(envItems, envItemsLength, deltaTime);
 
         // Camera target follows player
         UpdateCameraCenterInsideMap(&camera, &player, envItems, envItemsLength, deltaTime, screenWidth, screenHeight);
