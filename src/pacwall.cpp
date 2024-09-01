@@ -22,8 +22,8 @@
 #include <string>
 #include "envitem.cpp"
 #include "perso.h"
+#include "monster.h"
 #include "raymath.h"
-//#include "player.h"
 #include "version.h"
 
 using namespace std;
@@ -32,7 +32,6 @@ using namespace std;
 void init() {
 	//init
 }
-
 
 
 
@@ -71,20 +70,23 @@ int main(void) {
 	SetTargetFPS(60);
 
 	Player player((Vector2){ 400, 1280 },0,false);
+  Monster mstr((Vector2){ 100, 1280 });
 
-    EnvItem envItems[] = {
-        {{ 0, 0, 5000, 1000 }, 0, BLACK },
-        {{ 400, 1100, 100, 10 }, 1, GRAY },
-        {{ 0, 1400, 1000, 200 }, 1, GRAY },
-        {{ 500, 1360, 40, 40 }, 1, BLUE },
-        {{ 300, 1380, 40, 20 }, 1, GRAY },
-        {{ 400, 1360, 40, 20 }, 1, GRAY },
-        {{ 300, 1200, 400, 10 }, 1, GRAY },
-        {{ 250, 1300, 100, 10 }, 1, GRAY },
-        {{ 650, 1300, 100, 10 }, 1, GRAY }
+  EnvItem envItems[] = {
+      {{ 0, 0, 5000, 1000 }, 0, BLACK },
+      {{ 400, 1100, 100, 10 }, 1, GRAY },
+      {{ 0, 1400, 1000, 200 }, 1, GRAY },
+      {{ 500, 1360, 40, 40 }, 1, BLUE },
+      {{ 300, 1380, 40, 20 }, 1, GRAY },
+      {{ 400, 1360, 40, 20 }, 1, GRAY },
+      {{ 300, 1200, 400, 10 }, 1, GRAY },
+      {{ 250, 1300, 100, 10 }, 1, GRAY },
+      {{ 650, 1300, 100, 10 }, 1, GRAY }
     };
 
 	int envItemsLength = sizeof(envItems)/sizeof(envItems[0]);
+
+  //Monster
 
     Camera2D camera = { 0 };
     camera.target = player.position;
@@ -124,6 +126,8 @@ int main(void) {
 
 
                 player.draw();
+
+                mstr.Draw();
 
                 //DrawLine((int)camera.target.x, -screenHeight*10, (int)camera.target.x, screenHeight*10, GREEN);
                 //DrawLine(-screenWidth*10, (int)camera.target.y, screenWidth*10, (int)camera.target.y, GREEN);

@@ -1,5 +1,11 @@
 #include "perso.h"
 
+Player::Player(Vector2 position,float speed,bool canJump):
+  position(position),
+  speed(speed),
+  canJump(canJump) {
+}
+
 void Player::draw() {
   Rectangle playerRect = { position.x - 20, position.y - 40, 40.0f, 40.0f };
   if (direct=="right") {
