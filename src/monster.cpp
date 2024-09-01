@@ -5,5 +5,6 @@ Monster::Monster(Vector2 position):
 }
 
 void Monster::Draw() {
-  DrawRectangleRec((position.x, position.y,40,40),WHITE);
+  //DrawRectangleRec((int)position.x, (int)position.y,40,40,WHITE);
+	DrawRectangle(position.x, position.y, 40, 40, RED);
 }
