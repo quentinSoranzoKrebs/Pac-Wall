@@ -41,7 +41,7 @@ public:
   bool canJump;
 	Player(Vector2 position,float speed,bool canJump) : position(position),speed(speed),canJump(canJump) {}
 
-	void draw() {
+	void draw();/* {
 		Rectangle playerRect = { position.x - 20, position.y - 40, 40.0f, 40.0f };
     if (direct=="right") {
       DrawCircleSector((Vector2){position.x, position.y - 20},20.0f,25.0f,360-25,50,YELLOW);
@@ -50,10 +50,10 @@ public:
     }
     DrawCircle(position.x, position.y - 30, 3, BLACK);
     DrawCircle(position.x, position.y, 1, RED);
-	}
+	}*/
 
 
-	void UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta) {
+	void UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta);/* {
 
 		bool hitObstacle = false;
     bool hitObstacleHorizontal = false;
@@ -117,7 +117,7 @@ public:
   		speed = -PLAYER_JUMP_SPD;
 			canJump = false;
   	}
-	}
+	}*/
 
 };
 
