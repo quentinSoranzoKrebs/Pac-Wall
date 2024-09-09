@@ -4,4 +4,4 @@ Pac-Wall est un jeu de plateforme inspiré de PacMan. Il peut être installé su
 
 ## Install hint
 
-#in Linux
+# in Linux
