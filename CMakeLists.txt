@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Nom du projet et version
-project(MonProjet VERSION 1.0)
+project(Pac-Wall VERSION 0.2.0)
 
 # Chercher tous les fichiers .cpp et .h dans le répertoire src/
 file(GLOB SOURCES
@@ -21,6 +21,8 @@ add_executable(MonExecutable ${SOURCES})
 
 # Lier raylib à l'exécutable
 target_link_libraries(MonExecutable raylib)
+
+add_compile_options(-mwindows)
 
 # Si vous utilisez des fonctionnalités OpenGL ou autres
 if (WIN32)

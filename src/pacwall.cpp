@@ -53,7 +53,7 @@ int main(void) {
   const int screenWidth = 1150;
   const int screenHeight = 600;
 
-	string tit = "PacWall v";
+	string tit = "PacWall v2";
 
 	string version = "1";
 
@@ -63,8 +63,9 @@ int main(void) {
 
 	cout << title << endl;
 
-	//SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+
   InitWindow(screenWidth, screenHeight, title);
+  //SetConfigFlags(FLAG_WINDOW_RESIZABLE);
   //ToggleFullscreen();
 
 	SetTargetFPS(60);
