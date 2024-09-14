@@ -71,7 +71,7 @@ int main(void) {
 	SetTargetFPS(60);
 
   Player player((Vector2){ 400, 1280 },0,false);
-  Monster mstr((Vector2){ 100, 1280 });
+  Monster mstr((Vector2){ 100, 1280 },(Vector2){ 100, 1200 },(Vector2){ 100, 1280 });
 
   EnvItem envItems[] = {
       {{ 0, 0, 5000, 1000 }, 0, BLACK },

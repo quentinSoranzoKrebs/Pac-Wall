@@ -17,11 +17,16 @@ private:
   int vchute = 0;
   bool attack;
   float distance_perso;
+  Vector2 p1;
+  Vector2 p2;
+  string type;
 public:
   Vector2 position;
   float speed;
 
-  Monster(Vector2 position /*, Vector2 p1, Vector2 p2*/ );
+  Monster(Vector2 position);
+  Monster(Vector2 position, Vector2 p1, Vector2 p2);
+
   void Draw();
   void Update(EnvItem *envItems, int envItemsLength, float delta);
   void detect_perso(Vector2 player_position);

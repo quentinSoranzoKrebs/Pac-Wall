@@ -1,7 +1,17 @@
 #include "monster.h"
 
-Monster::Monster(Vector2 position /*, Vector2 p1 = (Vector2){0,0}, Vector2 p2 = (Vector2){0,0}*/ ):
+// constructeur pour monstres basic
+Monster::Monster(Vector2 position):
   position(position) {
+    type = "static";
+}
+
+// constructeur pour monstres qui se déplacent
+Monster::Monster(Vector2 position , Vector2 p1, Vector2 p2):
+  position(position),
+  p1(p1),
+  p2(p2) {
+    type = "round";
 }
 
 void Monster::Draw() {
@@ -83,5 +93,9 @@ void Monster::Update(EnvItem *envItems, int envItemsLength, float delta) {
 
 	//déplacements
   collisions(envItems, envItemsLength, delta);
+  if (type=="round") {
+    position = p1;
+  }
+
 
 }
