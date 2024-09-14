@@ -109,6 +109,8 @@ int main(void) {
 
         player.UpdatePlayer(envItems, envItemsLength, deltaTime);
         mstr.Update(envItems, envItemsLength, deltaTime);
+        mstr.detect_perso(player.position);
+        //cout << player.position.x << "  " << player.position.y << endl;
 
         // Camera target follows player
         UpdateCameraCenterInsideMap(&camera, &player, envItems, envItemsLength, deltaTime, screenWidth, screenHeight);
