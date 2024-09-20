@@ -12,6 +12,7 @@ Monster::Monster(Vector2 position , Vector2 p1, Vector2 p2):
   p1(p1),
   p2(p2) {
     type = "round";
+    direct = p1;
 }
 
 void Monster::Draw() {
@@ -94,7 +95,10 @@ void Monster::Update(EnvItem *envItems, int envItemsLength, float delta) {
 	//déplacements
   collisions(envItems, envItemsLength, delta);
   if (type=="round") {
-    position = p1;
+    if (position!=direct) {
+      position.x = 0;
+      position.y = 0;
+    }
   }
 
 

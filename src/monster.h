@@ -20,6 +20,7 @@ private:
   Vector2 p1;
   Vector2 p2;
   string type;
+  Vector2 direct;
 public:
   Vector2 position;
   float speed;

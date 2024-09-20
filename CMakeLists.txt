@@ -24,6 +24,8 @@ target_link_libraries(MonExecutable raylib)
 
 add_compile_options(-mwindows)
 
+install(TARGETS MonExecutable DESTINATION .)
+
 # Si vous utilisez des fonctionnalités OpenGL ou autres
 if (WIN32)
     target_link_libraries(MonExecutable opengl32 gdi32 winmm)
