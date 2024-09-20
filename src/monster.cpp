@@ -94,12 +94,10 @@ void Monster::Update(EnvItem *envItems, int envItemsLength, float delta) {
 
 	//déplacements
   collisions(envItems, envItemsLength, delta);
-  if (type=="round") {
-    if (position!=direct) {
-      position.x = 0;
-      position.y = 0;
-    }
-  }
+  /*distance = [x2 - x1, y2 - y1]
+  norm = math.sqrt(distance[0] ** 2 + distance[1] ** 2)
+  direction = [distance[0] / norm, distance[1] / norm]
+  bullet_vector = [direction[0] * math.sqrt(2), direction[1] * math.sqrt(2)]*/
 
 
 }

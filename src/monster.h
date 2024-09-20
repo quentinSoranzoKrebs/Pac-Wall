@@ -5,6 +5,7 @@
 #include <raylib.h>
 #include "raymath.h"
 #include "envitem.cpp"
+#include <cmath>
 
 using namespace std;
 
