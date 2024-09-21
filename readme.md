@@ -5,17 +5,4 @@ Pac-Wall is a platform game in
 
 ## Install hint
 
-### In Linux
-
-Clone the repos with git:
-```bash
-git clone https://gitlab.com/soranzokrebsquentin/pacwall.git
-```
-
-Install with cmake:
-```bash
-Cmake .
-```
-or download the binary in ...
-
-### In Windows
+ - [Working on Windows](https://github.com/raysan5/raylib/wiki/Working-on-Windows)
