@@ -5,4 +5,6 @@ Pac-Wall is a platform game in
 
 ## Install hint
 
+ - [install on windows](https://github.com/raysan5/raylib/wiki/Working-on-Windows)
+  - [Working on Windows](https://github.com/raysan5/raylib/wiki/Working-on-Windows)
  - [Working on Windows](https://github.com/raysan5/raylib/wiki/Working-on-Windows)
