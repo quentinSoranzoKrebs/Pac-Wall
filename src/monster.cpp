@@ -26,6 +26,7 @@ void Monster::detect_perso(Vector2 player_position) {
   float distance_perso = Vector2Distance(player_position,position);
   if (distance_perso < 250) {
     cout << distance_perso << endl;
+	direct = player_position;
   }
 }
 
@@ -59,9 +60,9 @@ void Monster::collisions(EnvItem *envItems, int envItemsLength, float delta) {
 
     if (!hitObstacle)
     {
-      position.y += speed*delta;
+      /*position.y += speed*delta;
       speed += G*delta;
-  	 //canJump = false;
+  	 //canJump = false;*/
     }
 
 
@@ -94,10 +95,13 @@ void Monster::Update(EnvItem *envItems, int envItemsLength, float delta) {
 
 	//déplacements
   collisions(envItems, envItemsLength, delta);
-  /*distance = [x2 - x1, y2 - y1]
-  norm = math.sqrt(distance[0] ** 2 + distance[1] ** 2)
-  direction = [distance[0] / norm, distance[1] / norm]
-  bullet_vector = [direction[0] * math.sqrt(2), direction[1] * math.sqrt(2)]*/
-
+  Vector2 distance = (Vector2){direct.x - position.x, direct.y - position.y};
+  float norm = sqrtf(distance.x * distance.x + distance.y * distance.y);
+  Vector2 direction = (Vector2){distance.x / norm, distance.y / norm};
+  Vector2 bullet_vector = (Vector2){direction.x * sqrtf(2), direction.y * sqrtf(2)};
+  cout << bullet_vector.x << bullet_vector.y << endl;
+  
+  position.x += bullet_vector.x;
+  position.y += bullet_vector.y;
 
 }

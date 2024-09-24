@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#define G 500
+#define G 0
 #define MONSTER_JUMP_SPD 370.0f
 #define MONSTER_HOR_SPD 200.0f
 
