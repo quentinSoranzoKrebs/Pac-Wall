@@ -79,6 +79,7 @@ int main(void) {
     Vector2 joystickBasePosition = {150, 300};  // Position de base du joystick
     float joystickRadius = 50.0f;               // Rayon de base du joystick
     Vector2 joystickCurrentPosition = joystickBasePosition;  // Position actuelle du contrôleur (cercle interne)
+    bool clic = false;
 
     // Variables pour gérer l'état du joystick
     bool isTouchingJoystick = false;  // Savoir si l'utilisateur touche le joystick
@@ -127,22 +128,25 @@ int main(void) {
             Vector2 touchPosition = GetMousePosition();
 
             // Si l'utilisateur touche à l'intérieur du cercle de base
-            if (CheckCollisionPointCircle(touchPosition, joystickBasePosition, joystickRadius)) {
+            //if (CheckCollisionPointCircle(touchPosition, joystickBasePosition, joystickRadius)) {
+            if (isTouchingJoystick == false) {
+                joystickBasePosition = touchPosition;
                 isTouchingJoystick = true;
-
-                // Calculer la distance entre la base du joystick et la position du toucher
-                float distance = GetDistance(joystickBasePosition, touchPosition);
-
-                // Limiter la distance pour ne pas sortir du cercle
-                if (distance <= maxDistanceFromBase) {
-                    joystickCurrentPosition = touchPosition;  // Déplacer le joystick
-                } else {
-                    // Normaliser la position du joystick pour qu'il reste dans le cercle
-                    float angle = atan2(touchPosition.y - joystickBasePosition.y, touchPosition.x - joystickBasePosition.x);
-                    joystickCurrentPosition.x = joystickBasePosition.x + cos(angle) * maxDistanceFromBase;
-                    joystickCurrentPosition.y = joystickBasePosition.y + sin(angle) * maxDistanceFromBase;
-                }
             }
+
+            // Calculer la distance entre la base du joystick et la position du toucher
+            float distance = GetDistance(joystickBasePosition, touchPosition);
+
+            // Limiter la distance pour ne pas sortir du cercle
+            if (distance <= maxDistanceFromBase) {
+                joystickCurrentPosition = touchPosition;  // Déplacer le joystick
+            } else {
+                // Normaliser la position du joystick pour qu'il reste dans le cercle
+                float angle = atan2(touchPosition.y - joystickBasePosition.y, touchPosition.x - joystickBasePosition.x);
+                joystickCurrentPosition.x = joystickBasePosition.x + cos(angle) * maxDistanceFromBase;
+                joystickCurrentPosition.y = joystickBasePosition.y + sin(angle) * maxDistanceFromBase;
+            }
+            //}
         } else {
             isTouchingJoystick = false;
             joystickCurrentPosition = joystickBasePosition;  // Réinitialiser le joystick à la position de base
