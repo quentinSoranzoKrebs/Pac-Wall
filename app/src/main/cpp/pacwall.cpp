@@ -25,7 +25,7 @@
 #include "monster.h"
 #include "raymath.h"
 #include "math.h"
-#include "util.h"
+#include "joystick.h"
 #include "version.h"
 
 using namespace std;
@@ -75,7 +75,10 @@ int main(void) {
 
 	SetTargetFPS(60);
 
+    Joystick joystik1((Vector2){150, 300}, 50.0f);
+
     // Position et rayon du joystick
+    Vector2 joystickDefaultPosition = {150, 300};
     Vector2 joystickBasePosition = {150, 300};  // Position de base du joystick
     float joystickRadius = 50.0f;               // Rayon de base du joystick
     Vector2 joystickCurrentPosition = joystickBasePosition;  // Position actuelle du contrôleur (cercle interne)
@@ -149,6 +152,7 @@ int main(void) {
             //}
         } else {
             isTouchingJoystick = false;
+            joystickBasePosition = joystickDefaultPosition;
             joystickCurrentPosition = joystickBasePosition;  // Réinitialiser le joystick à la position de base
         }
 
@@ -183,10 +187,10 @@ int main(void) {
             ClearBackground(BLACK);
 
             // Dessiner la base du joystick
-            DrawCircleV(joystickBasePosition, joystickRadius, LIGHTGRAY);
+            DrawCircleV(joystickBasePosition, joystickRadius, (Color){130,130,130,120});
 
             // Dessiner le cercle mobile du joystick (la position du pouce)
-            DrawCircleV(joystickCurrentPosition, 30, DARKGRAY);
+            DrawCircleV(joystickCurrentPosition, 30, (Color){150,150,150,120});
 
             // Dessiner le joueur (un cercle pour cet exemple)
             DrawCircleV(playerPosition, 20, RED);
