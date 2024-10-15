@@ -17,7 +17,7 @@ void Player::draw() {
   DrawCircle(position.x, position.y, 1, RED);
 }
 
-void Player::UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta, Vector2 win) {
+void Player::UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta, Vector2 direction) {
 
   bool hitObstacle = false;
   bool hitObstacleHorizontal = false;
@@ -54,28 +54,9 @@ void Player::UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta, Ve
 
   // Gestion des collisions horizontales avec clavier
   Vector2 oldPosition = position;
-
-  // Zones tactiles pour les flèches gauche et droite
-  Rectangle btnLeft = { 0, win.y - 100, 100, 100 }; // Zone pour la flèche gauche
-  Rectangle btnRight = { win.x - 100, win.y - 100, 100, 100 }; // Zone pour la flèche droite
-  // Vérification des entrées utilisateur (tactiles ou clic souris)
-  if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-      Vector2 touchPosition = GetMousePosition();
-
-      // Si on appuie sur la zone gauche
-      if (CheckCollisionPointRec(touchPosition, btnLeft)) {
-          position.x -= PLAYER_HOR_SPD * delta;  // Déplacement vers la gauche (flèche gauche)
-      }
-
-      // Si on appuie sur la zone droite
-      if (CheckCollisionPointRec(touchPosition, btnRight)) {
-          position.x += PLAYER_HOR_SPD * delta;  // Déplacement vers la droite (flèche droite)
-      }
-  }
-
-
   if (IsKeyDown(KEY_RIGHT)) position.x += PLAYER_HOR_SPD * delta;
   if (IsKeyDown(KEY_LEFT)) position.x -= PLAYER_HOR_SPD * delta;
+  if (direction.x > 0 || direction.x < 0) position.x += PLAYER_HOR_SPD * direction.x * delta;
 
   for (int i = 0; i < envItemsLength; i++) {
       EnvItem *ei = &envItems[i];

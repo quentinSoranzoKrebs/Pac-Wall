@@ -24,9 +24,9 @@
 #include "perso.h"
 #include "monster.h"
 #include "raymath.h"
-#include "math.h"
 #include "joystick.h"
 #include "version.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -35,10 +35,6 @@ void init() {
 	//init
 }
 
-// Fonction pour calculer la distance entre deux points
-float GetDistance(Vector2 point1, Vector2 point2) {
-    return sqrt(pow(point2.x - point1.x, 2) + pow(point2.y - point1.y, 2));
-}
 
 void UpdateCameraCenterInsideMap(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
 
@@ -82,7 +78,6 @@ int main(void) {
     Vector2 joystickBasePosition = {150, 300};  // Position de base du joystick
     float joystickRadius = 50.0f;               // Rayon de base du joystick
     Vector2 joystickCurrentPosition = joystickBasePosition;  // Position actuelle du contrôleur (cercle interne)
-    bool clic = false;
 
     // Variables pour gérer l'état du joystick
     bool isTouchingJoystick = false;  // Savoir si l'utilisateur touche le joystick
@@ -126,52 +121,18 @@ int main(void) {
         if (camera.zoom > 3.0f) camera.zoom = 3.0f;
         else if (camera.zoom < 0.25f) camera.zoom = 0.25f;
 
-        // Gestion des interactions tactiles/souris
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-            Vector2 touchPosition = GetMousePosition();
 
-            // Si l'utilisateur touche à l'intérieur du cercle de base
-            //if (CheckCollisionPointCircle(touchPosition, joystickBasePosition, joystickRadius)) {
-            if (isTouchingJoystick == false) {
-                joystickBasePosition = touchPosition;
-                isTouchingJoystick = true;
-            }
+        joystik1.Update();
 
-            // Calculer la distance entre la base du joystick et la position du toucher
-            float distance = GetDistance(joystickBasePosition, touchPosition);
-
-            // Limiter la distance pour ne pas sortir du cercle
-            if (distance <= maxDistanceFromBase) {
-                joystickCurrentPosition = touchPosition;  // Déplacer le joystick
-            } else {
-                // Normaliser la position du joystick pour qu'il reste dans le cercle
-                float angle = atan2(touchPosition.y - joystickBasePosition.y, touchPosition.x - joystickBasePosition.x);
-                joystickCurrentPosition.x = joystickBasePosition.x + cos(angle) * maxDistanceFromBase;
-                joystickCurrentPosition.y = joystickBasePosition.y + sin(angle) * maxDistanceFromBase;
-            }
-            //}
-        } else {
-            isTouchingJoystick = false;
-            joystickBasePosition = joystickDefaultPosition;
-            joystickCurrentPosition = joystickBasePosition;  // Réinitialiser le joystick à la position de base
-        }
-
-        // Calculer le vecteur de direction basé sur le déplacement du joystick
-        Vector2 direction = { joystickCurrentPosition.x - joystickBasePosition.x, joystickCurrentPosition.y - joystickBasePosition.y };
-
-        // Calculer la longueur du vecteur direction pour l'utiliser pour le déplacement du joueur
-        float magnitude = GetDistance(joystickBasePosition, joystickCurrentPosition);
-        if (magnitude > 0) {
-            direction.x /= magnitude;
-            direction.y /= magnitude;
-        }
+        Vector2 direction = joystik1.direction();
+        //cout << direction.x << direction.y << endl;
 
 
 
         // Utiliser la direction pour déplacer le joueur, ici juste un cercle de test
         Vector2 playerPosition = {400 + direction.x * 5, 225 + direction.y * 5};
 
-        player.UpdatePlayer(envItems, envItemsLength, deltaTime, (Vector2){ screenWidth, screenHeight});
+        player.UpdatePlayer(envItems, envItemsLength, deltaTime, direction);
         mstr.Update(envItems, envItemsLength, deltaTime);
         mstr.detect_perso(player.position);
         //cout << player.position.x << "  " << player.position.y << endl;
@@ -186,12 +147,6 @@ int main(void) {
 
             ClearBackground(BLACK);
 
-            // Dessiner la base du joystick
-            DrawCircleV(joystickBasePosition, joystickRadius, (Color){130,130,130,120});
-
-            // Dessiner le cercle mobile du joystick (la position du pouce)
-            DrawCircleV(joystickCurrentPosition, 30, (Color){150,150,150,120});
-
             // Dessiner le joueur (un cercle pour cet exemple)
             DrawCircleV(playerPosition, 20, RED);
 
@@ -201,7 +156,6 @@ int main(void) {
 
                 //DrawText("Congrats! You created your first window!", 190, 200, 20, WHITE);
 
-
                 player.draw();
 
                 mstr.Draw();
@@ -210,6 +164,8 @@ int main(void) {
                 //DrawLine(-screenWidth*10, (int)camera.target.y, screenWidth*10, (int)camera.target.y, GREEN);
 
             EndMode2D();
+                
+            joystik1.draw();
 
         EndDrawing();
         //--------------

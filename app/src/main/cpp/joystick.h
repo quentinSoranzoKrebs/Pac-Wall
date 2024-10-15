@@ -22,6 +22,7 @@
 
 #include <iostream>
 #include <raymob.h>
+#include "utils.h"
 
 
 class Joystick {
@@ -41,6 +42,8 @@ public:
     void draw();
 
     void Update();
+
+    Vector2 direction();
 
 };
 

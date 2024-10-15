@@ -17,33 +17,9 @@
  * along with Pac-Wall. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PERSO_H
-#define PERSO_H
+#include "utils.h"
 
-#include <iostream>
-#include <raymob.h>
-#include "envitem.cpp"
-
-#define G 500
-#define PLAYER_JUMP_SPD 370.0f
-#define PLAYER_HOR_SPD 200.0f
-
-using namespace std;
-
-class Player {
-private:
-	int vchute = 0;
-  string direct = "right";
-public:
-	Vector2 position;
-  float speed;
-  bool canJump;
-	Player(Vector2 position,float speed,bool canJump);
-
-	void draw();
-
-	void UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta, Vector2 direction);
-
-};
-
-#endif
+// Fonction pour calculer la distance entre deux points
+float GetDistance(Vector2 point1, Vector2 point2) {
+    return sqrt(pow(point2.x - point1.x, 2) + pow(point2.y - point1.y, 2));
+}
