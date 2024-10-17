@@ -17,7 +17,7 @@ void Player::draw() {
   DrawCircle(position.x, position.y, 1, RED);
 }
 
-void Player::UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta, Vector2 direction) {
+void Player::UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic) {
 
   bool hitObstacle = false;
   bool hitObstacleHorizontal = false;
@@ -78,7 +78,7 @@ void Player::UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta, Ve
 
       }
   }
-  if (IsKeyDown(KEY_SPACE) && canJump) {
+  if (IsKeyDown(KEY_SPACE) && canJump || jumpclic && canJump) {
     speed = -PLAYER_JUMP_SPD;
     canJump = false;
   }

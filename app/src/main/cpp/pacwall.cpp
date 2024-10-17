@@ -3,7 +3,7 @@
  *
  * This file is part of Pac-Wall.
  *
- * [Nom de ton projet] is free software: you can redistribute it and/or modify
+ * Pac-Wall is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -25,6 +25,7 @@
 #include "monster.h"
 #include "raymath.h"
 #include "joystick.h"
+#include "button.h"
 #include "version.h"
 #include "utils.h"
 
@@ -72,6 +73,7 @@ int main(void) {
 	SetTargetFPS(60);
 
     Joystick joystik1((Vector2){150, 300}, 50.0f);
+    Button JumpButton((Vector2){1000,500}, 50.0f, (Color){130,130,130,120});
 
     // Position et rayon du joystick
     Vector2 joystickDefaultPosition = {150, 300};
@@ -127,12 +129,13 @@ int main(void) {
         Vector2 direction = joystik1.direction();
         //cout << direction.x << direction.y << endl;
 
-
+        // Obtenir le nombre de doigts actuellement sur l'écran
+        int touchCount = GetTouchPointCount();
 
         // Utiliser la direction pour déplacer le joueur, ici juste un cercle de test
         Vector2 playerPosition = {400 + direction.x * 5, 225 + direction.y * 5};
 
-        player.UpdatePlayer(envItems, envItemsLength, deltaTime, direction);
+        player.UpdatePlayer(envItems, envItemsLength, deltaTime, direction, JumpButton.ispressed());
         mstr.Update(envItems, envItemsLength, deltaTime);
         mstr.detect_perso(player.position);
         //cout << player.position.x << "  " << player.position.y << endl;
@@ -166,6 +169,8 @@ int main(void) {
             EndMode2D();
                 
             joystik1.draw();
+            JumpButton.draw();
+            DrawText(TextFormat("Nombre de doigts: %d", touchCount), 190, 200, 20, DARKGRAY);
 
         EndDrawing();
         //--------------

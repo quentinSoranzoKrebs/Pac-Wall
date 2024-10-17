@@ -3,7 +3,7 @@
  *
  * This file is part of Pac-Wall.
  *
- * [Nom de ton projet] is free software: you can redistribute it and/or modify
+ * Pac-Wall is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -23,6 +23,7 @@
 #include <iostream>
 #include <raymob.h>
 #include "envitem.cpp"
+#include "utils.h"
 
 #define G 500
 #define PLAYER_JUMP_SPD 370.0f
@@ -42,7 +43,7 @@ public:
 
 	void draw();
 
-	void UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta, Vector2 direction);
+	void UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic);
 
 };
 

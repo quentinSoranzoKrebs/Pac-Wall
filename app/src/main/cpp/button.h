@@ -17,17 +17,31 @@
  * along with Pac-Wall. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef BUTTON_H
+#define BUTTON_H
 
 #include <iostream>
-#include "math.h"
-#include "raymob.h"
+#include <raymob.h>
+#include "utils.h"
 
-using namespace std;
 
-// Fonction pour calculer la distance entre deux points
-float GetDistance(Vector2 point1, Vector2 point2);
-bool isScreenTapped();
+class Button {
+private:
+    Vector2 pos;
+    float buttonradius;
+    bool pressed;
+    Color color;
+
+public:
+    Button(Vector2 ButtonPosition, float ButtonRadius, Color Buttoncolor);
+
+    void draw();
+
+    void Update();
+
+    bool ispressed();
+    
+
+};
 
 #endif

@@ -16,7 +16,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/deps/raylib)
 add_subdirectory(${CMAKE_SOURCE_DIR}/deps/raymob)
 
 # Fetch all source files for your project (recursively), excluding 'deps' source files
-file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/*.cpp" "${CMAKE_SOURCE_DIR}/*.h")
+file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/*.cpp" "${CMAKE_SOURCE_DIR}/*.h" "${CMAKE_SOURCE_DIR}/button.h" "${CMAKE_SOURCE_DIR}/button.cpp")
 list(FILTER SOURCES EXCLUDE REGEX "${CMAKE_SOURCE_DIR}/deps/.*")
 
 # Add headers directory for android_native_app_glue.c

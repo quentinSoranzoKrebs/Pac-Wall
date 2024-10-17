@@ -3,7 +3,7 @@
  *
  * This file is part of Pac-Wall.
  *
- * [Nom de ton projet] is free software: you can redistribute it and/or modify
+ * Pac-Wall is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -37,13 +37,16 @@ void Joystick::draw() {
 }
 
 void Joystick::Update() {
+    // Gestion des interactions tactiles
+    int touchCount = GetTouchPointCount();
+
     // Gestion des interactions tactiles/souris
-    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-        Vector2 touchPosition = GetMousePosition();
+    if (touchCount > 0 && GetTouchPosition(0).x < 500) {
+        Vector2 touchPosition = GetTouchPosition(0);
 
         // Si l'utilisateur touche à l'intérieur du cercle de base
         //if (CheckCollisionPointCircle(touchPosition, joystickBasePosition, joystickRadius)) {
-        if (isTouchingJoystick == false) {
+        if (!isTouchingJoystick) {
             joystickBasePosition = touchPosition;
             isTouchingJoystick = true;
         }
