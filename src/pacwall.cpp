@@ -3,7 +3,7 @@
  *
  * This file is part of Pac-Wall.
  *
- * [Nom de ton projet] is free software: you can redistribute it and/or modify
+ * Pac-Wall is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -17,14 +17,17 @@
  * along with Pac-Wall. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <raylib.h>
+#include "raylib.h"
 #include <iostream>
 #include <string>
 #include "envitem.cpp"
 #include "perso.h"
 #include "monster.h"
 #include "raymath.h"
+#include "joystick.h"
+#include "button.h"
 #include "version.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -32,7 +35,6 @@ using namespace std;
 void init() {
 	//init
 }
-
 
 
 void UpdateCameraCenterInsideMap(Camera2D *camera, Player *player, EnvItem *envItems, int envItemsLength, float delta, int width, int height);
@@ -53,13 +55,15 @@ int main(void) {
   const int screenWidth = 1150;
   const int screenHeight = 600;
 
-	string tit = "PacWall v2";
+	string tit = "PacWall ";
 
 	string version = "1";
 
-	string stitle = tit + version;
+	string stitle = tit + PROJECT_VERSION_MAJOR + "."
+                      + PROJECT_VERSION_MINOR + "."
+                      + PROJECT_VERSION_PATCH ;
 
-	char *title = stitle.data();
+	const char *title = stitle.data();
 
 	cout << title << endl;
 
@@ -70,7 +74,21 @@ int main(void) {
 
 	SetTargetFPS(60);
 
-  Player player((Vector2){ 400, 1280 },0,false);
+    Joystick joystik1((Vector2){150, 300}, 50.0f);
+    Button JumpButton((Vector2){1000,500}, 50.0f, (Color){130,130,130,120});
+
+    // Position et rayon du joystick
+    Vector2 joystickDefaultPosition = {150, 300};
+    Vector2 joystickBasePosition = {150, 300};  // Position de base du joystick
+    float joystickRadius = 50.0f;               // Rayon de base du joystick
+    Vector2 joystickCurrentPosition = joystickBasePosition;  // Position actuelle du contrôleur (cercle interne)
+
+    // Variables pour gérer l'état du joystick
+    bool isTouchingJoystick = false;  // Savoir si l'utilisateur touche le joystick
+    float maxDistanceFromBase = 40.0f;  // Distance maximale que le cercle interne peut parcourir
+
+
+    Player player((Vector2){ 400, 1280 },0,false);
   Monster mstr((Vector2){ 100, 1280 },(Vector2){ 100, 1200 },(Vector2){ 100, 1280 });
 
   EnvItem envItems[] = {
@@ -107,7 +125,13 @@ int main(void) {
         if (camera.zoom > 3.0f) camera.zoom = 3.0f;
         else if (camera.zoom < 0.25f) camera.zoom = 0.25f;
 
-        player.UpdatePlayer(envItems, envItemsLength, deltaTime);
+
+        joystik1.Update();
+
+        Vector2 direction = joystik1.direction();
+        //cout << direction.x << direction.y << endl;
+
+        player.UpdatePlayer(envItems, envItemsLength, deltaTime, direction, JumpButton.ispressed());
         mstr.Update(envItems, envItemsLength, deltaTime);
         mstr.detect_perso(player.position);
         //cout << player.position.x << "  " << player.position.y << endl;
@@ -128,7 +152,6 @@ int main(void) {
 
                 //DrawText("Congrats! You created your first window!", 190, 200, 20, WHITE);
 
-
                 player.draw();
 
                 mstr.Draw();
@@ -137,6 +160,9 @@ int main(void) {
                 //DrawLine(-screenWidth*10, (int)camera.target.y, screenWidth*10, (int)camera.target.y, GREEN);
 
             EndMode2D();
+                
+            joystik1.draw();
+            JumpButton.draw();
 
         EndDrawing();
         //--------------

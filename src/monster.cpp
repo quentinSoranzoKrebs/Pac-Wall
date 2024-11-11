@@ -25,7 +25,7 @@ void Monster::Draw() {
 void Monster::detect_perso(Vector2 player_position) {
   float distance_perso = Vector2Distance(player_position,position);
   if (distance_perso < 250) {
-    cout << distance_perso << endl;
+    //cout << distance_perso << endl;
 	direct = player_position;
   }
 }
@@ -99,7 +99,7 @@ void Monster::Update(EnvItem *envItems, int envItemsLength, float delta) {
   float norm = sqrtf(distance.x * distance.x + distance.y * distance.y);
   Vector2 direction = (Vector2){distance.x / norm, distance.y / norm};
   Vector2 bullet_vector = (Vector2){direction.x * sqrtf(2), direction.y * sqrtf(2)};
-  cout << bullet_vector.x << bullet_vector.y << endl;
+  //cout << bullet_vector.x << bullet_vector.y << endl;
   
   position.x += bullet_vector.x;
   position.y += bullet_vector.y;

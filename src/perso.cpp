@@ -17,7 +17,7 @@ void Player::draw() {
   DrawCircle(position.x, position.y, 1, RED);
 }
 
-void Player::UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta) {
+void Player::UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic) {
 
   bool hitObstacle = false;
   bool hitObstacleHorizontal = false;
@@ -52,10 +52,11 @@ void Player::UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta) {
   else canJump = true;
 
 
-  // Gestion des collisions horizontales
+  // Gestion des collisions horizontales avec clavier
   Vector2 oldPosition = position;
   if (IsKeyDown(KEY_RIGHT)) position.x += PLAYER_HOR_SPD * delta;
   if (IsKeyDown(KEY_LEFT)) position.x -= PLAYER_HOR_SPD * delta;
+  if (direction.x > 0 || direction.x < 0) position.x += PLAYER_HOR_SPD * direction.x * delta;
 
   for (int i = 0; i < envItemsLength; i++) {
       EnvItem *ei = &envItems[i];
@@ -77,7 +78,7 @@ void Player::UpdatePlayer(EnvItem *envItems, int envItemsLength, float delta) {
 
       }
   }
-  if (IsKeyDown(KEY_SPACE) && canJump) {
+  if (IsKeyDown(KEY_SPACE) && canJump || jumpclic && canJump) {
     speed = -PLAYER_JUMP_SPD;
     canJump = false;
   }

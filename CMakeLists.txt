@@ -1,8 +1,11 @@
 # Définir la version minimale de CMake
 cmake_minimum_required(VERSION 3.10)
 
+set(CMAKE_C_COMPILER "gcc")
+set(CMAKE_CXX_COMPILER "g++")
+
 # Nom du projet et version
-project(Pac-Wall VERSION 0.2.0)
+project(Pac-Wall VERSION 0.2.5)
 
 # Chercher tous les fichiers .cpp et .h dans le répertoire src/
 file(GLOB SOURCES

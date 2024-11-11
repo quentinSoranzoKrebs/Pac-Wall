@@ -3,7 +3,7 @@
  *
  * This file is part of Pac-Wall.
  *
- * [Nom de ton projet] is free software: you can redistribute it and/or modify
+ * Pac-Wall is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -29,6 +29,9 @@ typedef struct EnvItem {
     int blocking;
     Color color;
     Color origin_color = color;
+    // Constructeur pour initialiser les valeurs
+    EnvItem(Rectangle r, int b, Color c)
+            : rect(r), blocking(b), color(c), origin_color(c) {}
 } EnvItem;
 
 #endif
