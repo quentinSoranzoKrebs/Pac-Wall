@@ -5,7 +5,7 @@ set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
 
 # Nom du projet et version
-project(Pac-Wall VERSION 0.2.5)
+project(Pac-Wall VERSION 0.2.7)
 
 # Chercher tous les fichiers .cpp et .h dans le répertoire src/
 file(GLOB SOURCES
