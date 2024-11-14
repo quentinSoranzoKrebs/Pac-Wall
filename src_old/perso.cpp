@@ -17,14 +17,14 @@ void Player::Draw() {
   DrawCircle(position.x, position.y, 1, RED);
 }
 
-void Player::collisions(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic)
+void Player::collisions(EnvItem *envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic)
 {
 
   bool hitObstacle = false;
   bool hitObstacleHorizontal = false;
   for (int i = 0; i < envItemsLength; i++)
   {
-    EnvItem* ei = &envItems[i];
+    EnvItem *ei = envItems + i;
     Vector2 *p = &(position);
     if (ei->blocking &&
       ei->rect.x <= p->x + 20 &&
@@ -81,7 +81,7 @@ void Player::collisions(vector<EnvItem> envItems, int envItemsLength, float delt
   }
 }
 
-void Player::Update(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic) {
+void Player::Update(EnvItem *envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic) {
   collisions(envItems,envItemsLength, delta, direction, jumpclic);
   if (IsKeyDown(KEY_SPACE) && canJump || jumpclic && canJump) {
     speed = -PLAYER_JUMP_SPD;

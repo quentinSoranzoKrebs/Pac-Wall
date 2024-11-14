@@ -17,36 +17,21 @@
  * along with Pac-Wall. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PERSO_H
-#define PERSO_H
+
+ #ifndef ENVITEM_H
+ #define ENVITEM_H
 
 #include <iostream>
 #include <raylib.h>
-#include "envitem.cpp"
-#include "utils.h"
-#include "entite.h"
-#include <vector>
 
-#define G 500
-#define PLAYER_JUMP_SPD 370.0f
-#define PLAYER_HOR_SPD 200.0f
-
-using namespace std;
-
-class Player {
-private:
-	int vchute = 0;
-  	string direct = "right";
-public:
-	Vector2 position;
-  	float speed;
-  	bool canJump;
-	Player(Vector2 position,float speed,bool canJump);
-
-	void Draw();
-	void collisions(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic = false);
-	void Update(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic = false);
-
-};
+typedef struct EnvItem {
+    Rectangle rect;
+    int blocking;
+    Color color;
+    Color origin_color = color;
+    // Constructeur pour initialiser les valeurs
+    EnvItem(Rectangle r, int b, Color c)
+            : rect(r), blocking(b), color(c), origin_color(c) {}
+} EnvItem;
 
 #endif

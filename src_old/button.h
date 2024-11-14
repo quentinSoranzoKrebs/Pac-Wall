@@ -17,35 +17,30 @@
  * along with Pac-Wall. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PERSO_H
-#define PERSO_H
+#ifndef BUTTON_H
+#define BUTTON_H
 
 #include <iostream>
 #include <raylib.h>
-#include "envitem.cpp"
 #include "utils.h"
-#include "entite.h"
-#include <vector>
 
-#define G 500
-#define PLAYER_JUMP_SPD 370.0f
-#define PLAYER_HOR_SPD 200.0f
 
-using namespace std;
-
-class Player {
+class Button {
 private:
-	int vchute = 0;
-  	string direct = "right";
-public:
-	Vector2 position;
-  	float speed;
-  	bool canJump;
-	Player(Vector2 position,float speed,bool canJump);
+    Vector2 pos;
+    float buttonradius;
+    bool pressed;
+    Color color;
 
-	void Draw();
-	void collisions(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic = false);
-	void Update(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic = false);
+public:
+    Button(Vector2 ButtonPosition, float ButtonRadius, Color Buttoncolor);
+
+    void draw();
+
+    void Update();
+
+    bool ispressed();
+    
 
 };
 

@@ -20,20 +20,20 @@ find_package(raylib REQUIRED)
 include_directories(${RAYLIB_INCLUDE_DIRS} src)
 
 # Ajouter l'exécutable
-add_executable(MonExecutable ${SOURCES})
+add_executable(Pac-Wall ${SOURCES})
 
 # Lier raylib à l'exécutable
-target_link_libraries(MonExecutable raylib)
+target_link_libraries(Pac-Wall raylib)
 
 add_compile_options(-mwindows)
 
-install(TARGETS MonExecutable DESTINATION .)
+install(TARGETS Pac-Wall DESTINATION .)
 
 # Si vous utilisez des fonctionnalités OpenGL ou autres
 if (WIN32)
-    target_link_libraries(MonExecutable opengl32 gdi32 winmm)
+    target_link_libraries(Pac-Wall opengl32 gdi32 winmm)
 elseif (APPLE)
-    target_link_libraries(MonExecutable "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
+    target_link_libraries(Pac-Wall "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
 elseif (UNIX)
-    target_link_libraries(MonExecutable GL m pthread dl X11)
+    target_link_libraries(Pac-Wall GL m pthread dl X11)
 endif()

@@ -17,35 +17,28 @@
  * along with Pac-Wall. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PERSO_H
-#define PERSO_H
+#ifndef ENTITE_H
+#define ENTITE_H
 
 #include <iostream>
 #include <raylib.h>
 #include "envitem.cpp"
-#include "utils.h"
-#include "entite.h"
-#include <vector>
-
-#define G 500
-#define PLAYER_JUMP_SPD 370.0f
-#define PLAYER_HOR_SPD 200.0f
 
 using namespace std;
 
-class Player {
+
+class Entite {
 private:
-	int vchute = 0;
-  	string direct = "right";
 public:
 	Vector2 position;
-  	float speed;
-  	bool canJump;
-	Player(Vector2 position,float speed,bool canJump);
 
-	void Draw();
-	void collisions(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic = false);
-	void Update(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic = false);
+	Entite();
+	Entite(Vector2 position) : position(position) {}
+
+	virtual void Draw() = 0;
+	virtual void Update(EnvItem *envItems, int envItemsLength, float delta) = 0;
+
+	virtual ~Entite() = default;
 
 };
 

@@ -25,7 +25,6 @@
 #include "envitem.cpp"
 #include "utils.h"
 #include "entite.h"
-#include <vector>
 
 #define G 500
 #define PLAYER_JUMP_SPD 370.0f
@@ -44,8 +43,8 @@ public:
 	Player(Vector2 position,float speed,bool canJump);
 
 	void Draw();
-	void collisions(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic = false);
-	void Update(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic = false);
+	void collisions(EnvItem *envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic = false);
+	void Update(EnvItem *envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic = false);
 
 };
 

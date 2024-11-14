@@ -17,35 +17,34 @@
  * along with Pac-Wall. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PERSO_H
-#define PERSO_H
+#ifndef JOYSTICK_H
+#define JOYSTICK_H
 
 #include <iostream>
 #include <raylib.h>
-#include "envitem.cpp"
 #include "utils.h"
-#include "entite.h"
-#include <vector>
 
-#define G 500
-#define PLAYER_JUMP_SPD 370.0f
-#define PLAYER_HOR_SPD 200.0f
 
-using namespace std;
-
-class Player {
+class Joystick {
 private:
-	int vchute = 0;
-  	string direct = "right";
-public:
-	Vector2 position;
-  	float speed;
-  	bool canJump;
-	Player(Vector2 position,float speed,bool canJump);
+    // Position et rayon du joystick
+    Vector2 joystickDefaultPosition{};
+    Vector2 joystickBasePosition{};  // Position de base du joystick
+    float joystickRadius{};               // Rayon de base du joystick
+    Vector2 joystickCurrentPosition{};  // Position actuelle du contrôleur (cercle interne) 40.0f
 
-	void Draw();
-	void collisions(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic = false);
-	void Update(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 direction, bool jumpclic = false);
+    // Variables pour gérer l'état du joystick
+    bool isTouchingJoystick{};  // Savoir si l'utilisateur touche le joystick
+    float maxDistanceFromBase{};  // Distance maximale que le cercle interne peut parcourir
+public:
+    Joystick(Vector2 joystickDefaultPosition, float joystickRadius);
+
+    void draw();
+
+    void Update();
+
+    Vector2 direction();
+    
 
 };
 

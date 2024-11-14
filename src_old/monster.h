@@ -6,7 +6,7 @@
 #include "raymath.h"
 #include "envitem.cpp"
 #include <cmath>
-#include <vector>
+#include "entite.h"
 
 using namespace std;
 
@@ -30,9 +30,9 @@ public:
   Monster(Vector2 position, Vector2 p1, Vector2 p2);
 
   void Draw();
-  void Update(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 player_position);
+  void Update(EnvItem *envItems, int envItemsLength, float delta, Vector2 player_position);
   void detect_perso(Vector2 player_position);
-  void collisions(vector<EnvItem> envItems, int envItemsLength, float delta);
+  void collisions(EnvItem *envItems, int envItemsLength, float delta);
 
 
 };

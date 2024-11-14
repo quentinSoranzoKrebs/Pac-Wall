@@ -30,7 +30,7 @@ void Monster::detect_perso(Vector2 player_position) {
   }
 }
 
-void Monster::Update(vector<EnvItem> envItems, int envItemsLength, float delta, Vector2 player_position) {
+void Monster::Update(EnvItem *envItems, int envItemsLength, float delta, Vector2 player_position) {
 
 	//déplacements
   detect_perso(player_position);
