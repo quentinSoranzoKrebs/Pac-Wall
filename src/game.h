@@ -52,7 +52,7 @@ private:
     vector<Player> ListPlayer;
     vector<Monster> ListMstr;
     vector<EnvItem> envItems;
-    int envItemsLength = 9;
+    int envItemsLength;
     Camera2D camera;
     
     

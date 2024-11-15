@@ -5,12 +5,27 @@ set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
 
 # Nom du projet et version
-project(Pac-Wall VERSION 0.2.7)
+project(Pac-Wall VERSION 0.3.0)
 
 # Chercher tous les fichiers .cpp et .h dans le répertoire src/
 file(GLOB SOURCES
-    src/*.cpp
-    src/*.h
+    src/button.cpp
+    src/button.h
+    src/entite.h
+    src/envitem.cpp
+    src/game.cpp
+    src/game.h
+    src/joystick.cpp
+    src/joystick.h
+    src/monsster.cpp
+    src/monster.h
+    src/pacwall.cpp
+    src/perso.cpp
+    src/perso.h
+    src/raymath.h
+    src/util.cpp
+    src/util.h
+    src/version.h
 )
 
 # Trouver raylib

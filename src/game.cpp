@@ -31,50 +31,39 @@ void Game::Init()
     ListMstr.push_back(Monster((Vector2){ 100, 1280 },(Vector2){ 100, 1200 },(Vector2){ 100, 1280 }));
 
 
-    envItems.push_back({{ 0, 0, 5000, 1000 }, 0, BLACK });
-    envItems.push_back({{ 400, 1100, 100, 10 }, 1, GRAY });
-    envItems.push_back({{ 0, 1400, 1000, 200 }, 1, GRAY });
+    envItems.push_back({{ 0, 0, 5000, 1000 }, 0, RED });
+    envItems.push_back({{ 400, 1100, 100, 20 }, 1, GRAY });
+    envItems.push_back({{ 0, 1400, 5000, 20 }, 1, GRAY });
     envItems.push_back({{ 500, 1360, 40, 40 }, 1, BLUE });
     envItems.push_back({{ 300, 1380, 40, 20 }, 1, GRAY });
     envItems.push_back({{ 400, 1360, 40, 20 }, 1, GRAY });
-    envItems.push_back({{ 300, 1200, 400, 10 }, 1, GRAY });
-    envItems.push_back({{ 250, 1300, 100, 10 }, 1, GRAY });
-    envItems.push_back({{ 650, 1300, 100, 10 }, 1, GRAY });
+    envItems.push_back({{ 300, 1200, 400, 20 }, 1, GRAY });
+    envItems.push_back({{ 250, 1300, 100, 20 }, 1, GRAY });
+    envItems.push_back({{ 650, 1300, 100, 20 }, 1, GRAY });
 
 
-    // set environment
-    /*EnvItem envItems[9] = {
-        {{ 0, 0, 5000, 1000 }, 0, BLACK },
-        {{ 400, 1100, 100, 10 }, 1, GRAY },
-        {{ 0, 1400, 1000, 200 }, 1, GRAY },
-        {{ 500, 1360, 40, 40 }, 1, BLUE },
-        {{ 300, 1380, 40, 20 }, 1, GRAY },
-        {{ 400, 1360, 40, 20 }, 1, GRAY },
-        {{ 300, 1200, 400, 10 }, 1, GRAY },
-        {{ 250, 1300, 100, 10 }, 1, GRAY },
-        {{ 650, 1300, 100, 10 }, 1, GRAY }
-    };*/
-
-	//int envItemsLength = sizeof(envItems)/sizeof(envItems[0]);
+	envItemsLength = 9;
 
     // init camera
-    Camera2D camera = { 0 };
+    //Camera2D camera = { 0 };
     camera.target = ListPlayer[0].position;
     camera.offset = (Vector2){ screenWidth/2.0f, screenHeight/2.0f };
     camera.rotation = 0.0f;
-    camera.zoom = 6.0f;
+    camera.zoom = 1.1f;
 }
 
 void Game::Update()
 {
         float deltaTime = GetFrameTime();
 
-        camera.zoom += ((float)GetMouseWheelMove()*0.05f);
+        // camera.zoom += ((float)GetMouseWheelMove()*0.05f);
 
-        if (camera.zoom > 3.0f) camera.zoom = 3.0f;
-        else if (camera.zoom < 0.25f) camera.zoom = 0.25f;
+        // if (camera.zoom > 3.0f) camera.zoom = 3.0f;
+        // else if (camera.zoom < 0.25f) camera.zoom = 0.25f;
 
 
+
+        //camera.zoom = 1.1f;
         //joystik1.Update();
 
         //Vector2 direction = joystik1.direction();
@@ -102,7 +91,12 @@ void Game::Draw()
 
         BeginMode2D(camera);
 
-            for (int i = 0; i < envItemsLength; i++) DrawRectangleRec(envItems[i].rect, envItems[i].color);
+            for (int i = 0; i < envItemsLength; i++) 
+            {   
+                //DrawRectangleRec(envItems[i].rect, RED);
+                Rectangle rect = { envItems[i].rect.x + 7, envItems[i].rect.y + 7, envItems[i].rect.width - 14, envItems[i].rect.height - 14 };
+                DrawRectangleRoundedLines(rect, 1, 60, 7, envItems[i].color);;
+            }
 
             //DrawText("Congrats! You created your first window!", 190, 200, 20, WHITE);
 
@@ -148,5 +142,4 @@ void Game::UpdateCameraCenterInsideMap(Camera2D *camera, Player *player, vector<
     if (max.y < height) camera->offset.y = height - (max.y - height/2);
     if (min.x > 0) camera->offset.x = width/2 - min.x;
     if (min.y > 0) camera->offset.y = height/2 - min.y;
-    cout << camera->zoom << endl;
 }
