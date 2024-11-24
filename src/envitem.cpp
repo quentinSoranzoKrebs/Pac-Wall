@@ -29,9 +29,10 @@ typedef struct EnvItem {
     int blocking;
     Color color;
     Color origin_color = color;
+    bool solid;
     // Constructeur pour initialiser les valeurs
-    EnvItem(Rectangle r, int b, Color c)
-            : rect(r), blocking(b), color(c), origin_color(c) {}
+    EnvItem(Rectangle r, int b, Color c, bool s = false)
+            : rect(r), blocking(b), color(c), origin_color(c), solid(s) {}
 } EnvItem;
 
 #endif

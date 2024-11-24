@@ -38,6 +38,8 @@ int main ()
 		persons[i].putdata();
 	}
 
+	cout.flush();
+
 	for(int i=0; i < size; i++)
 	{
 		cout<<"\nPersonne "<< (i+1) <<"\n";

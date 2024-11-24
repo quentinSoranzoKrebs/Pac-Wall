@@ -1,0 +1,58 @@
+{
+    "map": {
+        "name": "Level 1",
+        "description": "A beginner's level with simple obstacles.",
+        "dimensions": {
+            "width": 50,
+            "height": 30
+        },
+        "terrain": [
+            [[ 0, 0, 5000, 1000 ], 0, "BLACK" ],
+            [[ 400, 1100, 100, 20 ], 1, "GRAY" ],
+            [[ 0, 1400, 5000, 20 ], 1, "GRAY" ],
+            [[ 500, 1360, 40, 40 ], 1, "BLUE" ],
+            [[ 300, 1380, 40, 20 ], 1, "GRAY" ],
+            [[ 400, 1360, 40, 20 ], 1, "GRAY" ],
+            [[ 300, 1200, 400, 20 ], 1, "GRAY" ],
+            [[ 250, 1300, 100, 20 ], 1, "GRAY" ],
+            [[ 650, 1300, 100, 20 ], 1, "GRAY" ]
+        ],
+        "objects": [
+            {
+                "type": "enemy",
+                "id": 1,
+                "position": { "x": 5, "y": 10 },
+                "attributes": {
+                    "health": 100,
+                    "damage": 10,
+                    "behavior": "aggressive"
+                }
+            },
+            {
+                "type": "enemy",
+                "id": "3",
+                "position": { "x": 5, "y": 10 },
+                "attributes": {
+                    "health": 100,
+                    "damage": 10,
+                    "behavior": "static"
+                }
+            },
+            {
+                "type": "item",
+                "id": 2,
+                "position": { "x": 3, "y": 8 },
+                "attributes": {
+                    "name": "Health Potion",
+                    "effect": "restore_health",
+                    "value": 50
+                }
+            }
+        ],
+        "settings": {
+            "background_color": "#87CEEB",
+            "gravity": 9.8,
+            "max_time": 300
+        }
+    }
+}

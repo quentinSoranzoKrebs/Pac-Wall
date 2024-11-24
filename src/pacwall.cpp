@@ -1,5 +1,5 @@
 //#include "game.h"
-#include "game.cpp"
+#include "game.h"
 #include <string>
 
 int main(void) {

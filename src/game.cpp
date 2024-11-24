@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2024 Quentin Soranzo Krebs
+ *
+ * This file is part of Pac-Wall.
+ *
+ * Pac-Wall is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Pac-Wall is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Pac-Wall. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "game.h"
 
 Game::Game(int screenWidth, int screenHeight, string title)
@@ -31,7 +50,9 @@ void Game::Init()
     ListMstr.push_back(Monster((Vector2){ 100, 1280 },(Vector2){ 100, 1200 },(Vector2){ 100, 1280 }));
 
 
-    envItems.push_back({{ 0, 0, 5000, 1000 }, 0, RED });
+    load_map((string)"../data/map.json");
+
+    /*envItems.push_back({{ 0, 0, 5000, 1000 }, 0, BLACK });
     envItems.push_back({{ 400, 1100, 100, 20 }, 1, GRAY });
     envItems.push_back({{ 0, 1400, 5000, 20 }, 1, GRAY });
     envItems.push_back({{ 500, 1360, 40, 40 }, 1, BLUE });
@@ -39,10 +60,9 @@ void Game::Init()
     envItems.push_back({{ 400, 1360, 40, 20 }, 1, GRAY });
     envItems.push_back({{ 300, 1200, 400, 20 }, 1, GRAY });
     envItems.push_back({{ 250, 1300, 100, 20 }, 1, GRAY });
-    envItems.push_back({{ 650, 1300, 100, 20 }, 1, GRAY });
+    envItems.push_back({{ 650, 1300, 100, 20 }, 1, GRAY });*/
 
-
-	envItemsLength = 9;
+	envItemsLength = envItems.size();
 
     // init camera
     //Camera2D camera = { 0 };
@@ -94,8 +114,15 @@ void Game::Draw()
             for (int i = 0; i < envItemsLength; i++) 
             {   
                 //DrawRectangleRec(envItems[i].rect, RED);
-                Rectangle rect = { envItems[i].rect.x + 7, envItems[i].rect.y + 7, envItems[i].rect.width - 14, envItems[i].rect.height - 14 };
-                DrawRectangleRoundedLines(rect, 1, 60, 7, envItems[i].color);;
+                if (envItems[i].solid)
+                {
+                    DrawRectangleRec(envItems[i].rect, envItems[i].color);
+
+                } else if (!envItems[i].solid) 
+                {
+                    Rectangle rect = { envItems[i].rect.x + 7, envItems[i].rect.y + 7, envItems[i].rect.width - 14, envItems[i].rect.height - 14 };
+                    DrawRectangleRoundedLines(rect, 1, 60, 7, envItems[i].color);;
+                }
             }
 
             //DrawText("Congrats! You created your first window!", 190, 200, 20, WHITE);
@@ -118,6 +145,66 @@ void Game::Draw()
 
 void Game::Cleanup()
 {
+}
+
+void Game::load_map(string map)
+{
+    // Ouvrir le fichier JSON
+    std::ifstream input_file(map);
+    if (!input_file.is_open()) {
+        std::cerr << "Erreur : Impossible d'ouvrir le fichier " << map <<  ".json" << std::endl;
+    }
+
+    // Lire le contenu du fichier JSON
+    nlohmann::json j;
+    input_file >> j;
+
+    // Fermer le fichier
+    input_file.close();
+
+    // Accéder aux données JSON
+    /*std::cout << "name: " << j["map"]["name"] << std::endl;
+    std::cout << "description: " << j["map"]["description"] << std::endl;
+    std::cout << "dimension width: " << j["map"]["dimensions"]["width"] << std::endl;
+    std::cout << "list: ";*/
+    
+
+    // Récupérer les données de j["map"]["terrain"][0][0]
+    int x = 0;
+    int y = 0;
+    int width = j["map"]["dimensions"]["width"];
+    int height = j["map"]["dimensions"]["height"];
+
+    // Créer un Rectangle avec ces données
+    Rectangle rect = { (float)x, (float)y, (float)width, (float)height };
+    std::cout << x << "," << y << "," << width << "," << height << std::endl;
+
+    // Récupérer la couleur de l'item
+    std::vector<unsigned char> background_color = j["map"]["settings"]["background_color"];
+    Color color = (Color){background_color[0],background_color[1],background_color[2],background_color[3]};
+
+    // Ajouter le fond de la map
+    envItems.push_back({{0,0,1420,5000},0,color,true});
+
+    for (const auto& elem : j["map"]["terrain"]) {
+        //std::cout << elem << " ";
+
+        // Récupérer les données de j["map"]["terrain"][0][0]
+        int x = elem[0]["x"];
+        int y = elem[0]["y"];
+        int width = elem[0]["width"];
+        int height = elem[0]["height"];
+
+        // Récupérer la couleur de l'item
+        Color color = (Color){elem[2][0],elem[2][1],elem[2][2],elem[2][3]};
+
+        // Créer un Rectangle avec ces données
+        Rectangle rect = { (float)x, (float)y, (float)width, (float)height };
+
+        //créer l'item
+        envItems.push_back({rect,elem[1],color});
+    }
+    std::cout << std::endl;
 }
 
 void Game::UpdateCameraCenterInsideMap(Camera2D *camera, Player *player, vector<EnvItem> envItems, int envItemsLength, float delta, int width, int height)

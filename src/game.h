@@ -22,6 +22,8 @@
 
 #include "raylib.h"
 #include <iostream>
+#include <fstream>
+#include <nlohmann/json.hpp>
 #include <string>
 #include "envitem.cpp"
 #include "perso.h"
@@ -62,6 +64,7 @@ private:
     void Update();
     void Draw();
     void Cleanup();
+    void load_map(string map);
     
     // Autres éléments du jeu (joueur, ennemis, etc.)
     // Exemple: Vector2 playerPosition;
