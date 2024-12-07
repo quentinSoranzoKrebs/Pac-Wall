@@ -7,8 +7,11 @@ cmake_minimum_required(VERSION 3.10)
 # Chercher tous les fichiers .cpp et .h dans le répertoire src/
 file(GLOB SOURCES *.h *.cpp )
 
-# Trouver raylib
-find_package(raylib REQUIRED)
+# Adding Raylib
+include(FetchContent)
+set(FETCHCONTENT_QUIET FALSE)
+set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
+set(BUILD_GAMES    OFF CACHE BOOL "" FORCE) # don't build the supplied example games
 
 # Ajouter les include directories (inclut src pour les headers locaux)
 include_directories(${RAYLIB_INCLUDE_DIRS} src)

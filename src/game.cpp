@@ -121,7 +121,7 @@ void Game::Draw()
                 } else if (!envItems[i].solid) 
                 {
                     Rectangle rect = { envItems[i].rect.x + 7, envItems[i].rect.y + 7, envItems[i].rect.width - 14, envItems[i].rect.height - 14 };
-                    DrawRectangleRoundedLines(rect, 1, 60, 7, envItems[i].color);;
+                    //DrawRectangleRoundedLines(rect, 1, 60, envItems[i].color);
                 }
             }
 
