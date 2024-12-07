@@ -21,7 +21,7 @@ target_link_libraries(Pac-Wall raylib)
 
 add_compile_options(-mwindows)
 
-install(TARGETS Pac-Wall DESTINATION ../)
+install(TARGETS Pac-Wall DESTINATION .)
 
 # Si vous utilisez des fonctionnalités OpenGL ou autres
 if (WIN32)
