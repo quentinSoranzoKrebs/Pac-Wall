@@ -13,6 +13,15 @@
 		"context": "..",
 		// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
 		"dockerfile": "../Dockerfile" 
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-azuretools.vscode-docker",
+				"ms-vscode.cmake-tools",
+				"twxs.cmake"
+			]
+		}
 	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
